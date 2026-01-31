@@ -1,0 +1,11 @@
+https://adtreferral.com/login/
+
+Log in page with 
+    email:  nethan.nagendran@gmail.com 
+        ID : LeftArea_Login_Form_amp-element-input-LoginUsername-Login
+    password: Helloschool1!
+        ID : LeftArea_Login_Form_amp-element-input-LoginPassword-Login
+
+    Log in Button
+        ID : amp-element-input amp-element-nextpage-nav-item btn Login
+
