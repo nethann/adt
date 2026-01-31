@@ -8,10 +8,16 @@ from selenium.webdriver.common.action_chains import ActionChains
 import json
 import time
 
+# Load credentials from config file
+import os
+config_path = os.path.join(os.path.dirname(__file__), 'config.json')
+with open(config_path, 'r') as f:
+    config = json.load(f)
+
 # Configuration
 LOGIN_URL = "https://adtreferral.com/login/"
-EMAIL = "nethan.nagendran@gmail.com"
-PASSWORD = "Helloschool1!"
+EMAIL = config['email']
+PASSWORD = config['password']
 
 # Setup Chrome options
 chrome_options = Options()

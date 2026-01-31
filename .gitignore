@@ -1,0 +1,19 @@
+# Credentials
+scripts/config.json
+config.json
+
+# Cookies/Session data
+scripts/cookies.json
+cookies.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
