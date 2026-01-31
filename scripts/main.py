@@ -211,7 +211,7 @@ except Exception as e:
     print(f"\nError: {e}")
 
 finally:
-    print("\nKeeping browser open for 10 seconds so you can see the result...")
-    time.sleep(10)
+    print("\nBrowser will stay open. Press Enter to close it...")
+    input()
     driver.quit()
     print("Browser closed.")
