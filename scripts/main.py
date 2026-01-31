@@ -3,6 +3,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 import json
 import time
 
@@ -17,6 +19,12 @@ chrome_options = Options()
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+# Disable Chrome password manager popups
+chrome_options.add_experimental_option("prefs", {
+    "credentials_enable_service": False,
+    "profile.password_manager_enabled": False,
+    "profile.password_manager_leak_detection": False,
+})
 
 print("Starting browser...")
 driver = webdriver.Chrome(options=chrome_options)
@@ -114,21 +122,90 @@ try:
         json.dump(cookies_dict, f, indent=2)
     print("\n✓ Saved to cookies.json")
 
-    # Test accessing main page
+    # Dismiss "Check your password" popup if present
     print("\n" + "="*60)
-    print("Testing access to main site...")
+    print("Checking for password popup...")
     print("="*60)
-    driver.get("https://adtreferral.com/")
-    time.sleep(2)
-    print(f"Main page URL: {driver.current_url}")
-    print(f"Page title: {driver.title}")
+    time.sleep(2)  # Wait for popup to appear
 
-    # Check for logout link as sign of being logged in
-    try:
-        logout_link = driver.find_element(By.XPATH, "//*[contains(text(), 'Logout') or contains(text(), 'Log Out') or contains(text(), 'Sign Out')]")
-        print("✓ LOGGED IN - Found logout link!")
-    except:
-        print("⚠ Could not find logout link - may not be logged in")
+    popup_dismissed = False
+    # Try various ways to dismiss the popup
+    close_selectors = [
+        (By.CSS_SELECTOR, ".modal .close"),
+        (By.CSS_SELECTOR, ".modal-close"),
+        (By.CSS_SELECTOR, "button.close"),
+        (By.CSS_SELECTOR, "[data-dismiss='modal']"),
+        (By.CSS_SELECTOR, ".btn-close"),
+        (By.XPATH, "//button[contains(@class, 'close')]"),
+        (By.XPATH, "//button[contains(text(), 'Close')]"),
+        (By.XPATH, "//button[contains(text(), 'OK')]"),
+        (By.XPATH, "//button[contains(text(), 'Got it')]"),
+        (By.XPATH, "//button[contains(text(), 'Dismiss')]"),
+        (By.XPATH, "//span[contains(text(), '×')]"),
+        (By.XPATH, "//*[contains(@class, 'modal')]//*[contains(@class, 'close')]"),
+    ]
+
+    for selector_type, selector in close_selectors:
+        try:
+            close_btn = driver.find_element(selector_type, selector)
+            if close_btn.is_displayed():
+                close_btn.click()
+                print(f"  ✓ Dismissed popup using: {selector}")
+                popup_dismissed = True
+                time.sleep(1)
+                break
+        except:
+            continue
+
+    # If no close button found, try pressing Escape
+    if not popup_dismissed:
+        try:
+            ActionChains(driver).send_keys(Keys.ESCAPE).perform()
+            print("  ✓ Pressed Escape to dismiss popup")
+            time.sleep(1)
+        except:
+            pass
+
+    # Step 6: Click "Refer a Friend" button
+    print("\n" + "="*60)
+    print("Step 6: Looking for 'Refer a Friend' button...")
+    print("="*60)
+
+    refer_button = None
+    refer_selectors = [
+        (By.CSS_SELECTOR, ".EmpowermentTextLink.AllowEditorClick"),
+        (By.XPATH, "//*[contains(@class, 'EmpowermentTextLink') and contains(text(), 'Refer')]"),
+        (By.XPATH, "//a[contains(text(), 'Refer a Friend')]"),
+        (By.XPATH, "//button[contains(text(), 'Refer a Friend')]"),
+        (By.XPATH, "//*[contains(text(), 'Refer a Friend')]"),
+    ]
+
+    for selector_type, selector in refer_selectors:
+        try:
+            refer_button = wait.until(EC.element_to_be_clickable((selector_type, selector)))
+            if refer_button.is_displayed():
+                print(f"  Found 'Refer a Friend' button using: {selector}")
+                break
+        except:
+            continue
+
+    if refer_button:
+        refer_button.click()
+        print("  ✓ Clicked 'Refer a Friend' button!")
+        time.sleep(3)
+        print(f"  Current URL: {driver.current_url}")
+        print(f"  Page title: {driver.title}")
+    else:
+        print("  ⚠ Could not find 'Refer a Friend' button")
+        print("  Printing page source snippet to help debug...")
+        # Print links on the page to help find the right selector
+        links = driver.find_elements(By.TAG_NAME, "a")
+        print(f"  Found {len(links)} links on page:")
+        for link in links[:15]:  # First 15 links
+            text = link.text.strip()
+            href = link.get_attribute("href")
+            if text:
+                print(f"    - '{text}' -> {href}")
 
 except Exception as e:
     print(f"\nError: {e}")
