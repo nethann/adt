@@ -7,6 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import json
 import time
+from openpyxl import load_workbook
 
 # Load credentials from config file
 import os
@@ -204,14 +205,104 @@ try:
     else:
         print("  ⚠ Could not find 'Refer a Friend' button")
         print("  Printing page source snippet to help debug...")
-        # Print links on the page to help find the right selector
         links = driver.find_elements(By.TAG_NAME, "a")
         print(f"  Found {len(links)} links on page:")
-        for link in links[:15]:  # First 15 links
+        for link in links[:15]:
             text = link.text.strip()
             href = link.get_attribute("href")
             if text:
                 print(f"    - '{text}' -> {href}")
+
+    # Step 7: Read Excel and loop through all entries
+    print("\n" + "="*60)
+    print("Step 7: Loading Excel data...")
+    print("="*60)
+
+    xlsx_path = os.path.join(os.path.dirname(__file__), '..', 'files', 'tkinter_1.xlsx')
+    wb = load_workbook(xlsx_path)
+    ws = wb.active
+
+    # Read rows (skip header row 1), carry forward business name for merged cells
+    rows = []
+    last_business = ""
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        opportunity = str(row[0]).strip() if row[0] else ""
+        contact = str(row[1]).strip() if row[1] else ""
+        phone = str(row[2]).strip() if row[2] else ""
+        if not contact or not phone:
+            continue
+        if opportunity:
+            last_business = opportunity
+        rows.append({
+            'business': last_business,
+            'contact': contact,
+            'phone': phone,
+        })
+
+    print(f"  Found {len(rows)} valid entries to submit.\n")
+
+    FIELD_IDS = {
+        'first': 'RightArea_Suggest_amp-element-input-EmpowerSuggestFirstName-EmpowerSuggest',
+        'last': 'RightArea_Suggest_amp-element-input-EmpowerSuggestLastName-EmpowerSuggest',
+        'phone': 'RightArea_Suggest_amp-element-input-EmpowerSuggestPhone-EmpowerSuggest',
+        'business': 'RightArea_Suggest_amp-element-input-EmpowerSuggestCompanyName-EmpowerSuggest',
+    }
+
+    SUBMIT_ID = 'RightArea_Suggest_amp-element-input-EmpowerSuggestSubmit-EmpowerSuggest'
+
+    def fill_field(field_id, value):
+        driver.execute_script(
+            "var el = document.getElementById(arguments[0]);"
+            "el.value = arguments[1];"
+            "el.dispatchEvent(new Event('input', {bubbles: true}));"
+            "el.dispatchEvent(new Event('change', {bubbles: true}));",
+            field_id, value
+        )
+
+    # Skip already-submitted entries (change this number to resume from a different row)
+    START_FROM = 3  # 1=KINSER, 2=MARY already done, start from 3=Jennifer
+
+    for i, entry in enumerate(rows):
+        if i < START_FROM - 1:
+            continue
+
+        business_name = entry['business']
+        contact = entry['contact']
+        phone = entry['phone']
+
+        name_parts = contact.split()
+        first_name = name_parts[0] if len(name_parts) >= 1 else ""
+        last_name = " ".join(name_parts[1:]) if len(name_parts) >= 2 else ""
+
+        print(f"  [{i+1}/{len(rows)}] {first_name} {last_name} | {phone} | {business_name}")
+
+        # Wait for the first name field to be clickable (form fully ready)
+        wait.until(EC.element_to_be_clickable((By.ID, FIELD_IDS['first'])))
+
+        # Fill all fields via JS (fast)
+        fill_field(FIELD_IDS['first'], first_name)
+        fill_field(FIELD_IDS['last'], last_name)
+        fill_field(FIELD_IDS['phone'], phone)
+        fill_field(FIELD_IDS['business'], business_name)
+
+        # Click the submit button by its ID
+        submit_btn = wait.until(EC.element_to_be_clickable((By.ID, SUBMIT_ID)))
+        driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", submit_btn)
+        time.sleep(0.3)
+        submit_btn.click()
+
+        # Wait for submission to process
+        time.sleep(2)
+        print(f"    ✓ Submitted!")
+
+        # Click the reset button to get a fresh form for the next entry
+        if i < len(rows) - 1:
+            reset_btn = wait.until(EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, ".SuggestButton.amp-element-suggest-reset-form-button")))
+            reset_btn.click()
+            time.sleep(1)
+
+    print(f"\n  ✓ Done! Submitted all referrals.")
 
 except Exception as e:
     print(f"\nError: {e}")
