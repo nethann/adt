@@ -260,7 +260,7 @@ try:
         )
 
     # Skip already-submitted entries (change this number to resume from a different row)
-    START_FROM = 3  # 1=KINSER, 2=MARY already done, start from 3=Jennifer
+    START_FROM = 1  # Start from the first entry
 
     for i, entry in enumerate(rows):
         if i < START_FROM - 1:
