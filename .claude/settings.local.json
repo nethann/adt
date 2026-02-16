@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(C:/Users/netha/AppData/Local/Programs/Python/Python311/python.exe -m pip install:*)"
-    ]
-  }
-}

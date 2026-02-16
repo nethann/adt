@@ -1,0 +1,50 @@
+REFERRAL DATA - PLEASE CONFIRM
+================================
+Format: First Name | Last Name | Phone | Business Name
+
+1. Simon | Chteni | (916) 804-4900 | MAX CELLULAR INC
+2. Dalvir | Chitha | (916) 455-4000 | Novelty Fashions
+3. Chhote | Lal | (916) 386-0080 | WILSON AUTO PARTS
+4. Dalvir | Chitha | (916) 455-2200 | Direct Express
+5. James | Taiwo | (925) 750-7861 | AFRICAN GIFT
+6. Andrew | Huston | (408) 497-3495 | VALLE'S FINEST CATERING
+7. Kristina | Beardsley | (916) 817-3793 | HANUMAN ORIGINALS
+8. Ramon | Perez | (707) 673-1127 | THE JELMAR SANDWICH
+9. Kim | Nguyen | (916) 479-7050 | Albahadei Inc
+10. Bob | Cubantis | (916) 802-0660 | R GRACE
+11. Chris | Sigfried | (916) 967-1407 | Marble Rite Inc
+12. Chris | Sigfried | (916) 847-6024 | POKER BRAINS
+13. Calvin | Lebeau | (916) 212-1798 | QUICK TRANS TRANSPORT LLC
+14. ML | Maharani | (916) 496-5114 | MAHARANI LABORATORIES
+15. Anil | Rana | (916) 316-2410 | STAR ENTERPRISES PROMOTION
+16. Raiza | Elvert | (408) 772-3224 | FORTUNA LLC
+17. Hetal | Desai | (510) 717-4434 | BAKERYCAFE INC
+18. David | Emerald | (209) 617-8082 | PROTEK BIOSCIENCE INC
+19. Karen | White | (916) 549-1979 | JDB Wallace JR
+20. Al | Vega | (916) 519-4823 | PLATINUM CIGARETTE CORP
+21. Mike | Whitman | (530) 913-4848 | Whitman Fabrication Inc
+22. Rahul | Agrawal | (916) 271-3003 | TRIBUNE CHRONICLE INC
+23. Mark | Leblanc | (510) 541-3649 | N DANG CONSTRUCTION LLC
+24. Eva | Ruelas | (916) 897-1063 | R C MAINTENANCE SERVICES
+25. Chris | Sigfried | (916) 487-1407 | Marble Rite Inc
+26. Bryan | Samudio | (916) 644-4044 | SHIRLEY FIRM LLC
+27. Ursula | Roberts | (209) 914-4000 | PROLINE
+28. Caleb | Kim | (916) 834-6917 | A2B TIRE
+29. Evelyn | Cardenas | (530) 351-4604 | Sabor Latino
+30. Luke | Dejesus | (916) 718-8851 | Sam Citie
+31. Trisha | Safikhani | (916) 205-2668 | Funtime Bakid Goods
+32. Keith | Arcilla | (916) 826-7774 | DHANOA INC
+33. Jonathan | Summers | (209) 327-9556 | E-Thriftwares LLC
+34. Richard | Fernandez | (408) 806-7989 | Sierra Tech Data Inc
+35. Gurdev | Fathwal | (510) 681-5137 | Genesis Petro LLC
+36. Cindy | Liu | (925) 998-9973 | Cindy's Cleaning Services LLC
+37. Ebony | Francis | (916) 337-0702 | Christina Kim
+38. David | Cook | (916) 284-4988 | Truefire Inc
+39. John | Curran | (707) 330-1891 | N DANG CONSTRUCTION INC
+40. Seema | Patel | (209) 404-3802 | AGS PLUMBING INC
+
+=== DUPLICATES REMOVED ===
+- Dalvir Chitha appears twice (kept entry #2, removed #4 - same person different business)
+- Chris Sigfried appears 3 times (kept all - different businesses)
+
+Total unique entries: 40

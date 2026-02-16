@@ -9,3 +9,8 @@ Log in page with
     Log in Button
         ID : amp-element-input amp-element-nextpage-nav-item btn Login
 
+Fields : 
+    First name (Required)
+    Last name (Required)
+    Phone number (Required)
+    Business name (If applicable)
